@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using Firebase;
+using Firebase.Auth;
+using Firebase.Database;
 
 public class Controller : MonoBehaviour
 {
@@ -19,7 +22,7 @@ public class Controller : MonoBehaviour
     public TextMeshProUGUI CherryText;
     public TextMeshProUGUI timer;
     private float timp=0;
-    
+
     void Start()
     {
         CherryText.text = "0"; 

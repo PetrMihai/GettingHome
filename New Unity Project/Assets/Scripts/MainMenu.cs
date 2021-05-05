@@ -6,7 +6,16 @@ using UnityEngine.Audio;
 
 public class MainMenu : MonoBehaviour
 {
+
+
     public AudioMixer AudioMixer;
+
+    public void Update()
+    {
+        
+    }
+
+
 
     public void QuitGame()
     {
