@@ -31,12 +31,6 @@ public class FirebaseManager : MonoBehaviour
     public TMP_InputField passwordRegisterVerifyField;
     public TMP_Text warningRegisterText;
 
-    //User Data variables
-     [Header("UserData")]
-      public TMP_InputField usernameField;
-      public GameObject scoreElement;
-      public Transform scoreboardContent;
-
     void Awake()
     {
         //Check that all of the necessary dependencies for Firebase are present on the system
@@ -87,20 +81,7 @@ public class FirebaseManager : MonoBehaviour
         //Call the register coroutine passing the email, password, and username
         StartCoroutine(Register(emailRegisterField.text, passwordRegisterField.text, usernameRegisterField.text));
     }
-    //Function for the sign out button
-    public void SignOutButton()
-    {
-        auth.SignOut();
-        SceneManager.LoadScene("Login");
-        ClearRegisterFeilds();
-        ClearLoginFeilds();
-    }
-    //Function for the save button
-    public void updateScore()
-    {
-        ///Update score if higher.
-    }
-    //Function for the scoreboard button
+    
     private IEnumerator Login(string _email, string _password)
     {
         //Call the Firebase auth signin function passing the email and password
@@ -276,84 +257,6 @@ public class FirebaseManager : MonoBehaviour
             }
         }
     }
-
-    public IEnumerator updateScore1(int score1)
-    {
-        //Set the currently logged in user kills
-        var DBTask = DBreference.Child("users").Child(User.UserId).GetValueAsync();
-
-        yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
-
-        if (DBTask.Exception != null)
-        {
-            Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
-        }
-        else
-        {
-            DataSnapshot snapshot = DBTask.Result;
-            int x = int.Parse(snapshot.Child("score1").Value.ToString());
-            if (score1>x)
-            {
-                int y = int.Parse(snapshot.Child("scoref").Value.ToString());
-                y -= x;
-                y += score1;
-                var DB1Task = DBreference.Child("users").Child(User.UserId).Child("scoref").SetValueAsync(y);
-
-                yield return new WaitUntil(predicate: () => DB1Task.IsCompleted);
-                if (DB1Task.Exception != null)
-                {
-                    Debug.LogWarning(message: $"Failed to register task with {DB1Task.Exception}");
-                }
-                var DB2Task = DBreference.Child("users").Child(User.UserId).Child("scoref").SetValueAsync(score1);
-                
-                yield return new WaitUntil(predicate: () => DB2Task.IsCompleted);
-                if (DB2Task.Exception != null)
-                {
-                    Debug.LogWarning(message: $"Failed to register task with {DB2Task.Exception}");
-                }
-            }
-        }
-    }
-     public void ScoreboardButton()
-     {
-         StartCoroutine(LoadScoreboardData());
-     }
-     private IEnumerator LoadScoreboardData()
-     {
-         //Get all the users data ordered by kills amount
-         var DBTask = DBreference.Child("users").OrderByChild("scoref").GetValueAsync();
-
-         yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
-
-         if (DBTask.Exception != null)
-         {
-             Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
-         }
-         else
-         {
-             //Data has been retrieved
-             DataSnapshot snapshot = DBTask.Result;
-
-             //Destroy any existing scoreboard elements
-             foreach (Transform child in scoreboardContent.transform)
-             {
-                 Destroy(child.gameObject);
-             }
-
-             //Loop through every users UID
-             foreach (DataSnapshot childSnapshot in snapshot.Children.Reverse<DataSnapshot>())
-             {
-                 string username = childSnapshot.Child("username").Value.ToString();
-                 int score1 = int.Parse(childSnapshot.Child("score1").Value.ToString());
-                 int score2 = int.Parse(childSnapshot.Child("score2").Value.ToString());
-                 int score3 = int.Parse(childSnapshot.Child("score3").Value.ToString());
-                 int scoref = int.Parse(childSnapshot.Child("scoref").Value.ToString());
-
-                 //Instantiate new scoreboard elements
-                 GameObject scoreboardElement = Instantiate(scoreElement, scoreboardContent);
-                 scoreboardElement.GetComponent<ScoreElement>().NewScoreElement(username, score1, score2, score3, scoref);
-             }
-         }
-     }
+     
 
 }

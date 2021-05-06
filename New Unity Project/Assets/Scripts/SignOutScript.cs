@@ -17,8 +17,6 @@ public class SignOutScript : MonoBehaviour
     public DependencyStatus dependencyStatus;
     public DatabaseReference DBreference;
 
-    //User Data variables
-    [Header("UserData")]
     public GameObject scoreElement;
     public Transform scoreboardContent;
 
